@@ -1,6 +1,8 @@
+import java.time.LocalDate;
 import java.util.Arrays;
 
 public class AppNotas {
+    private Calendario calendario;
     private Nota[] notas;
     private Categoria[] categorias;
     private Lembrete[] lembretes;
@@ -19,6 +21,7 @@ public class AppNotas {
         this.quantidadeCategorias = 0;
         this.quantidadeLembretes = 0;
         this.quantidadeUsuarios = 0;
+        this.calendario = new Calendario();
     }
 
     public void adicionarNota(Nota nota) {
@@ -39,15 +42,23 @@ public class AppNotas {
         }
     }
 
+    // public int getLembretesMes() {
+    //     if(LocalDate.now().getMonth() == lembretes.getMes())
+    // }
+
     public void adicionarLembrete(Lembrete lembrete) {
         if (quantidadeLembretes < lembretes.length) {
             lembretes[quantidadeLembretes] = lembrete;
             quantidadeLembretes++;
+            
+            if (lembrete.getMes() == LocalDate.now().getMonthValue() && lembrete.getAno() == LocalDate.now().getYear()) {
+                calendario.adicionarLembreteCalendario(lembrete.getDia(), lembrete.getMes(), lembrete.getAno());
+            }
         } else {
             System.out.println("Limite de lembretes atingido.");
         }
     }
-
+    
     public void adicionarUsuario(Usuario usuario) {
         if (quantidadeUsuarios < usuarios.length) {
             usuarios[quantidadeUsuarios] = usuario;
@@ -73,6 +84,11 @@ public class AppNotas {
         return Arrays.copyOf(lembretes, quantidadeLembretes);
     }
 
-    public void adicionarLembreteCalendario(int diaLembrete, int mesLembrete, int anoLembrete) {
-    }
+    public Calendario getCalendario() {
+        return calendario;
+    }    
+
+    // public void adicionarLembreteCalen(int diaLembrete, int mesLembrete, int anoLembrete) {
+    //     calendario.adicionarLembreteCalendario(diaLembrete, mesLembrete, anoLembrete);
+    // }
 }

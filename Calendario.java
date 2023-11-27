@@ -15,16 +15,16 @@ public class Calendario {
         }
     }
 
-    public void adicionarLembreteCalendario(int dia, int mes, int ano) {
+    public void adicionarLembreteCalendario(int diaLembrete, int mesLembrete, int anoLembrete) {
         LocalDate data = LocalDate.now();
-        if (mes == data.getMonthValue() && ano == data.getYear()) {
-            if (dia >= 1 && dia <= TAMANHO_MES * 7) {
+        if (mesLembrete == data.getMonthValue() && anoLembrete == data.getYear()) {
+            if (diaLembrete >= 1 && diaLembrete <= TAMANHO_MES * 7) {
             
             LocalDate primeiroDiaDoMes = LocalDate.of(data.getYear(), data.getMonth(), 1);
             int diaDaSemanaInicio = primeiroDiaDoMes.getDayOfWeek().getValue();
 
-            int semana = (dia + diaDaSemanaInicio - 2) / 7;
-            int diaDaSemana = (dia + diaDaSemanaInicio - 2) % 7;
+            int semana = (diaLembrete + diaDaSemanaInicio - 2) / 7;
+            int diaDaSemana = (diaLembrete + diaDaSemanaInicio - 2) % 7;
             lembretes[semana][diaDaSemana] = true;
         } else {
             System.out.println("Dia inválido no calendário.");
@@ -37,7 +37,7 @@ public class Calendario {
         LocalDate data = LocalDate.now();
         LocalDate primeiroDiaDoMes = LocalDate.of(data.getYear(), data.getMonth(), 1);
         int diaDaSemanaInicio = primeiroDiaDoMes.getDayOfWeek().getValue();
-
+    
         int dia = 1;
         for (int i = 0; i < TAMANHO_MES; i++) {
             for (int j = Math.max(0, diaDaSemanaInicio - 1); j < 7; j++) {
@@ -46,13 +46,17 @@ public class Calendario {
                     if (lembretes[i][j]) {
                         calendario[i][j] += "*"; // Adiciona um asterisco se houver lembrete
                     }
+                    if (dia == LocalDate.now().getDayOfMonth()) {
+                        calendario[i][j] = "|"+ calendario[i][j]+"|"; // Adiciona um traço sob o dia de hoje
+                    }
                     dia++;
                 }
             }
-
-            diaDaSemanaInicio = 0; // Na próxima linha, começa na posição 0
+    
+            diaDaSemanaInicio = 0;
         }
     }
+    
 
     public void exibirCalendario() {
         System.out.println("  Seg   Ter   Qua   Qui   Sex   Sab   Dom");

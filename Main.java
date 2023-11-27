@@ -35,9 +35,9 @@ public class Main {
                 case 2:
                     adicionarNota(scanner, aplicativo, usuario);
                     break;
-                case 3:
-                    adicionarLembrete(scanner, aplicativo, usuario, aplicativo);
-                    break;
+                    case 3:
+                    adicionarLembrete(scanner, aplicativo, usuario, aplicativo.getCalendario());
+                    break;                
                 case 4:
                     exibirInformacoes(aplicativo);
                     break;
@@ -45,6 +45,14 @@ public class Main {
                     calendario.inicializarCalendario();
                     calendario.preencherCalendario();
                     calendario.exibirCalendario();
+                    System.out.println("\n");
+                    exibirInformacoesLembretes(aplicativo);
+                    // if (lembrete.getMes() == LocalDate.now().getMonthValue()) {
+                    //     System.out.println("\nLembretes do mês:");
+                    //     for (Lembrete lembrete : aplicativo.getLembretes()) {
+                    //         System.out.println(lembrete);
+                    //     }
+                    // }
                     break;
                 case 0:
                     System.out.println("Saindo do aplicativo. Até mais!");
@@ -97,84 +105,112 @@ public class Main {
     }
 
     private static void exibirMenuCategorias(AppNotas aplicativo) {
-        System.out.println("\n======= CATEGORIAS =======");
+        System.out.println("\n======= Escolha a categoria da nota =======");
         Categoria[] categorias = aplicativo.getCategorias();
         for (int i = 0; i < categorias.length; i++) {
             System.out.println((i + 1) + ". " + categorias[i].toString());
         }
     }
 
-    private static void adicionarNota(Scanner scanner, AppNotas aplicativo, Usuario usuario) {
-        System.out.print("Título da nota: ");
-        String titulo = scanner.next();
-        System.out.print("Conteúdo da nota: ");
-        String conteudo = scanner.next();
+private static void adicionarNota(Scanner scanner, AppNotas aplicativo, Usuario usuario) {
+    System.out.print("Título da nota: ");
+    String titulo = scanner.next();
+    System.out.print("Conteúdo da nota: ");
+    String conteudo = scanner.next();
 
-        exibirMenuCategorias(aplicativo);
+    exibirMenuCategorias(aplicativo);
 
-        System.out.print("Escolha o número da categoria: ");
-        int escolhaCategoria = scanner.nextInt();
+    System.out.print("Número da categoria: ");
+    int escolhaCategoria = scanner.nextInt();
 
-        Categoria[] categorias = aplicativo.getCategorias();
+    Categoria[] categorias = aplicativo.getCategorias();
 
-        if (escolhaCategoria >= 1 && escolhaCategoria <= categorias.length) {
-            Categoria categoriaEscolhida = categorias[escolhaCategoria - 1];
+    if (escolhaCategoria >= 1 && escolhaCategoria <= categorias.length) {
+        Categoria categoriaEscolhida = categorias[escolhaCategoria - 1];
 
-            System.out.print("Dia da criação da nota: ");
-            int diaCriacao = scanner.nextInt();
-            System.out.print("Mês da criação da nota: ");
-            int mesCriacao = scanner.nextInt();
-            System.out.print("Ano da criação da nota: ");
-            int anoCriacao = scanner.nextInt();
+        int diaCriacao = LocalDate.now().getDayOfMonth();
+        int mesCriacao = LocalDate.now().getMonthValue();
+        int anoCriacao = LocalDate.now().getYear();
 
-            Nota nota = new Nota(titulo, conteudo, categoriaEscolhida, usuario,
-                    new Data(diaCriacao, mesCriacao, anoCriacao));
-            aplicativo.adicionarNota(nota);
+        Nota nota = new Nota(titulo, conteudo, categoriaEscolhida, usuario,
+                new Data(diaCriacao, mesCriacao, anoCriacao));
+        aplicativo.adicionarNota(nota);
 
-            System.out.println("Nota adicionada com sucesso!");
-        } else {
-            System.out.println("Escolha de categoria inválida.");
-        }
+        System.out.println("Nota adicionada com sucesso!");
+    } else {
+        System.out.println("Escolha de categoria inválida.");
     }
+}
 
-    private static void adicionarLembrete(Scanner scanner, AppNotas aplicativo, Usuario usuario, AppNotas calendario) {
+
+private static void adicionarLembrete(Scanner scanner, AppNotas aplicativo, Usuario usuario, Calendario calendario) {
+    String titulo, descricao;
+    int diaLembrete, mesLembrete, anoLembrete;
+
+    do {
         System.out.print("Título do lembrete: ");
-        String titulo = scanner.next();
+        titulo = scanner.next();
         System.out.print("Descrição do lembrete: ");
-        String descricao = scanner.next();
-        System.out.print("Dia do lembrete: ");
-        int diaLembrete = scanner.nextInt();
-        if (Integer.toString(diaLembrete).length() > 2) {
-            System.out.println("O dia digitado não é válido");
-        }
-        if (diaLembrete > 31) {
-            System.out.println("O número digitado não pode ser maior que 31");
-        }
-        System.out.print("Mês do lembrete: ");
-        int mesLembrete = scanner.nextInt();
-        if (Integer.toString(mesLembrete).length() > 2) {
-            System.out.println("O mês digitado não é válido");
-        }
-        if (mesLembrete > 12) {
-            System.out.println("O número digitado não pode ser maior que 12");
-        }
-        System.out.print("Ano do lembrete: ");
-        int anoLembrete = scanner.nextInt();
-        if (Integer.toString(anoLembrete).length() > 4) {
-            System.out.println("O ano digitado não é válido");
-        }
-        if (anoLembrete < 2023) {
-            System.out.println("O ano digitado já passou... Por favor, digite uma data futura");
-        }
+        descricao = scanner.next();
+
+        do {
+            System.out.print("Dia do lembrete: ");
+            diaLembrete = scanner.nextInt();
+            if (diaLembrete <= 31) {
+                break;
+            } else {
+                System.out.println("O número digitado não pode ser maior que 31.");
+            }
+        } while (true);
+
+        do {
+            System.out.print("Mês do lembrete: ");
+            mesLembrete = scanner.nextInt();
+            if (mesLembrete <= 12) {
+                break;
+            } else {
+                System.out.println("O número digitado não pode ser maior que 12.");
+            }
+        } while (true);
+
+        do {
+            System.out.print("Ano do lembrete: ");
+            anoLembrete = scanner.nextInt();
+            if (anoLembrete >= 2023) {
+                break;
+            } else {
+                System.out.println("O ano digitado já passou... Por favor, digite uma data futura.");
+            }
+        } while (true);
+
         if (mesLembrete == LocalDate.now().getMonthValue() && anoLembrete == LocalDate.now().getYear()) {
             calendario.adicionarLembreteCalendario(diaLembrete, mesLembrete, anoLembrete);
         }
+
         Lembrete lembrete = new Lembrete(titulo, descricao, new Data(diaLembrete, mesLembrete, anoLembrete), usuario);
         aplicativo.adicionarLembrete(lembrete);
 
         System.out.println("Lembrete adicionado com sucesso!");
-    }
+        
+        System.out.print("Deseja adicionar outro lembrete? (S/N): ");
+    } while (scanner.next().equalsIgnoreCase("S"));
+}
 
+
+    // private static int exibirLembretesData(AppNotas aplicativo){
+    //     int[] dataLembretes;
+    //     for (Lembrete lembrete : aplicativo.getLembretes()) {
+    //         int i =0;
+    //         dataLembretes[i] = lembrete.getMes();
+    //         i++;
+    //     }
+    //     return dataLembretes;
+    // }
+    private static void exibirInformacoesLembretes(AppNotas aplicativo) {
+        for (Lembrete lembrete : aplicativo.getLembretes()) {
+            System.out.println(lembrete);
+        }
+    }
     private static void exibirInformacoes(AppNotas aplicativo) {
         System.out.println("\n======= INFORMAÇÕES =======");
         System.out.println("Usuários:");

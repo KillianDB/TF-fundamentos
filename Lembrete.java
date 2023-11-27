@@ -31,6 +31,18 @@ public class Lembrete {
         return dataLembrete;
     }
 
+    public int getDia() {
+        return this.dataLembrete.getDia();
+    }
+
+    public int getMes() {
+        return this.dataLembrete.getMes();
+    }
+
+    public int getAno() {
+        return this.dataLembrete.getAno();
+    }
+
     public void setDataLembrete(Data dataLembrete) {
         this.dataLembrete = dataLembrete;
     }
@@ -47,5 +59,9 @@ public class Lembrete {
     public String toString() {
         return String.format("Lembrete: %s, Descrição: %s, Data do Lembrete: %s, Criador: %s",
                 titulo, descricao, dataLembrete, criador.getNome());
+    }
+
+    public Object getData() {
+        return null;
     }
 }
